@@ -1,0 +1,11 @@
+const socket = io();
+let j;
+let p = new Partie();
+let v = new Vote();
+let sh = new SocketHandler();
+sh.player_vote();
+sh.word();
+sh.playerR();
+sh.join();
+sh.playerVoteScreen();
+sh.endRound();
