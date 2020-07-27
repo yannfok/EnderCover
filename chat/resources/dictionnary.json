@@ -1,0 +1,22 @@
+{
+  "dictionnaire":
+  [
+    [
+      "voiture",
+      "avion",
+      "bus",
+      "train"
+    ],
+    [
+      "football",
+      "basketball",
+      "volleyball",
+      "badmington"
+    ],
+    [
+      "clou",
+      "ecrou",
+      "vis"
+    ]
+  ]
+}
