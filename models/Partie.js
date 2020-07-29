@@ -2,26 +2,81 @@ const {Dictionnary} = require('./Dictionnary');
 
 module.exports.Partie = class Partie {
 
-    constructor(party) {
-        this.joueurs = party.joueurs;
-        this.timer = party.timer;
+    constructor() {
+        this.joueurs = [];
+        this.timer = 0;
     }
 
-    static setWords(party, words) {
+    resetPoint()
+    {
 
-        let partie = new Partie(party);
+        this.joueurs.forEach(element=>{
+           element.score = 0;
+        });
+
+    }
+
+    setParty(party)
+    {
+
+        this.joueurs = party.joueurs;
+        this.timer = party.timer;
+
+    }
+
+    addPlayer(player)
+    {
+
+        this.playerExists(player).then(result=>{
+            if(!result)this.joueurs.push(player);
+        });
+
+    }
+
+    async playerExists(player)
+    {
+
+        return new Promise(resolve => {
+            let result = false;
+            this.joueurs.forEach(element=>{
+                if(element.name === player.name) result = true;
+            });
+            resolve(result);
+        });
+
+    }
+
+    setWords(words) {
+
         let r = Dictionnary.getRndInteger(0, 3);
-        partie.joueurs[r].word = words[0];
-        partie.joueurs[r].solo = true;
-        for (let i = 0; i < partie.joueurs.length; i++) {
+        this.joueurs[r].word = words[0];
+        this.joueurs[r].solo = true;
+        for (let i = 0; i < this.joueurs.length; i++) {
 
             if (i === r) continue;
-            partie.joueurs[i].word = words[1];
-            partie.joueurs[i].solo = false;
+            this.joueurs[i].word = words[1];
+            this.joueurs[i].solo = false;
 
         }
 
-        return partie;
+    }
+
+    async words()
+    {
+
+        return new Promise(resolve => {
+            let result = [];
+            result.push(this.joueurs[0].word);
+            this.joueurs.forEach(element=>{
+                if(element.word !== result[0])
+                    result.push(element.word);
+            });
+            resolve(result);
+        });
+
+    }
+
+    static motEquals(a, b) {
 
     }
 

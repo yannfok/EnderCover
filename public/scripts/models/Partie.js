@@ -5,10 +5,25 @@ class Partie{
         this.timer = 0;
     }
 
+    async playerExists(player)
+    {
+
+        return new Promise(resolve => {
+           let result = false;
+           this.joueurs.forEach(element=>{
+              if(element.name === player.name) result = true;
+           });
+           resolve(result);
+        });
+
+    }
+
     addPlayer(player)
     {
 
-        this.joueurs.push(player);
+        this.playerExists(player).then(result=>{
+            if(!result)this.joueurs.push(player);
+        });
 
     }
 
@@ -46,10 +61,17 @@ class Partie{
 
         let span = document.querySelector("#compteur");
         span.innerHTML = this.joueurs.length+"/4";
+
+    }
+
+    start()
+    {
+
         if(this.joueurs.length>=4)
         {
-            socket.emit("party_limit",this);
+            socket.emit("party_limit");
         }
+
 
     }
 
@@ -89,7 +111,6 @@ class Partie{
             clearInterval(this.timer);
             input.innerHTML = "";
             this.timer = 0;
-            console.log(this);
         }
     }
 
@@ -129,7 +150,7 @@ class Partie{
            element.innerHTML = this.joueurs[i].name;
            i++;
         });
-        socket.emit("party_limit",this);
+        socket.emit("party_limit");
 
     }
 

@@ -1,11 +1,10 @@
-const socket = io();
+const socket = io("http://192.168.1.35:3000/EnderCover");
 let j;
 let p = new Partie();
 let v = new Vote();
 let sh = new SocketHandler();
-sh.player_vote();
-sh.word();
-sh.playerR();
 sh.join();
-sh.playerVoteScreen();
-sh.endRound();
+sh.onWord();
+sh.onVote();
+sh.onVoteCB();
+sh.onFinish();

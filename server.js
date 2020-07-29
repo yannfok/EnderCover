@@ -8,6 +8,10 @@ let io = require('socket.io')(http);
 let session = require('cookie-session');
 let bodyparser = require('body-parser');
 let urlEncodedParser = bodyparser.urlencoded({extended:false});
+let p = new Partie();
+let j;
+
+const workspace = io.of("/EnderCover");
 
 app.use(session({secret:'secretEnderCover'}));
 
@@ -19,39 +23,47 @@ app.get("/",(req,res)=>{
 
 }).post("/user",urlEncodedParser,(req,res)=>{
 
-    req.session.player = new Joueur(req.body.user,"test");
+    //req.session.player = new Joueur(req.body.user,"test");
+    j = new Joueur(req.body.user,"test");
+    p.addPlayer(j);
     res.redirect("EnderCover");
 
 }).get("/EnderCover",(req,res)=>{
 
     res.sendFile(__dirname+"/EnderCover.html");
-    io.sockets.emit('join',req.session.player);
-    io.on("connect",(socket)=>{
-        socket.emit('playerR',req.session.player);
-    });
+
+});
+
+workspace.on("connection",(socket)=>{
     let d = new Dictionnary(__dirname+'/resources/dictionnary.json');
-    io.sockets.on('connection',(socket)=>{
-        socket.on('party_limit',async (resolve)=>{
-            req.session.party = await Partie.setWords(resolve,await d.words());
-            io.sockets.emit('word',req.session.party);
+    let cookieString = socket.request.headers.cookie;
+    let req = {headers:{cookie:cookieString}};
+    session({ keys: ['secretEnderCover'] })(req, {}, function(){});
+    workspace.emit('join',j,p);
+    socket.on('party_limit',()=>{
+        p.resetPoint();
+        d.words().then(result=>{
+            p.setWords(result);
         });
-        socket.on('vote',(resolve)=>{
-           req.session.party = new Partie(resolve);
-           console.log(req.session.party);
-           io.sockets.emit('player_vote',req.session.party);
-        });
-        socket.on('player_has_vote',(res)=>{
-            io.sockets.emit('player_vote_screen',res);
-        });
-        socket.on('round_finish',(res)=>{
-           req.session.party = new Partie(res);
-           req.session.party.winner().then(result=>socket.emit("winner_loser",Array.from(result)));
+        workspace.emit('word',p);
+    });
+    socket.on('vote',(party)=>{
+        p.joueurs = party.joueurs;
+        workspace.emit('party_vote',p);
+    });
+    socket.on('player_has_vote',(vote)=>{
+       workspace.emit('vote_from_player',vote);
+    });
+    socket.on('finish',(party)=>{
+        p.joueurs = party.joueurs;
+        p.winner().then(result=>{
+            workspace.emit('result_party',Array.from(result));
         });
     });
 });
 
 http.listen(3000,()=>{
 
-   console.log("server running on 3000");
+    console.log("server running on 3000");
 
 });

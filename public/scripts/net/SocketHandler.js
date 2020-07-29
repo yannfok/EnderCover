@@ -1,75 +1,72 @@
 class SocketHandler {
 
-    player_vote() {
+    /**
+     * Renvoie le joueur qui join la room
+     */
 
-        socket.on('player_vote', (party) => {
+    join() {
+
+        socket.on('join',(result,party)=>{
+           if(j===undefined) j = new Joueur(result.name,result.word);
+           p.joueurs = party.joueurs;
+           p.printPlayers();
+           p.limit();
+           p.start();
+        });
+
+    }
+
+    onWord()
+    {
+
+        socket.on('word',party=>{
+            console.log(party);
             p.joueurs = party.joueurs;
-            p.timer = party.timer;
-            p.roundFinish().then(async (result) => {
-                await p.printWait(result);
-                if (result)
-                    socket.emit("round_finish", p);
+            p.roundFinish().then(result=>{
+                j.setWordWithParty(p);
+                j.printWord(p);
+                p.printWait(result);
+                v.vote(p,j);
             });
         });
 
     }
 
-    word() {
-
-        socket.on('word', (party) => {
-            p.joueurs = party.joueurs;
-            j.setWordWithParty(p);
-            j.printWord(p);
-            p.roundFinish().then(result => p.printWait(result));
-            v.vote(p, j);
-        });
-
-    }
-
-    playerR() {
-
-        socket.on('playerR', (player) => {
-            p.maximum();
-            j = new Joueur(player.name, player.word);
-            p.addPlayer(player);
-            p.printPlayers();
-            p.limit();
-        });
-
-    }
-
-    join() {
-
-        socket.on('join', (player) => {
-            p.maximum();
-            p.addPlayer(player);
-            p.printPlayers();
-            p.limit();
-        });
-
-    }
-
-    playerVoteScreen() {
-
-        socket.on('player_vote_screen', (result) => {
-            let v = new Vote();
-            v.player = result.player;
-            v.player_vote = result.player_vote;
-            v.renderVote();
-        });
-
-    }
-
-    endRound()
+    onVote()
     {
 
-        socket.on('winner_loser',(tab)=>{
-           let result = new Map(tab);
-           p.printResult(result);
-           setTimeout(()=>{
-               p.reset();
-           },5000);
+        socket.on('party_vote',(result)=>{
+            p.joueurs = result.joueurs;
+            p.roundFinish().then(finish=>{
+               p.printWait(finish);
+               if(finish)socket.emit('finish',p);
+            });
         });
+
+    }
+
+    onVoteCB()
+    {
+
+        socket.on('vote_from_player',vote=>{
+           let vte = new Vote();
+           vte.player = vote.player;
+           vte.player_vote = vote.player_vote;
+           vte.renderVote();
+        });
+
+    }
+
+    onFinish()
+    {
+
+        socket.on('result_party',(result)=>{
+            let map = new Map(result);
+            p.printResult(map);
+            setTimeout(()=>{
+                p.reset();
+            },5000);
+        })
 
     }
 
