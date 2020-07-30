@@ -3,6 +3,7 @@ class Partie{
     constructor() {
         this.joueurs = [];
         this.timer = 0;
+        this.timer_wait = null;
     }
 
     async playerExists(player)
@@ -37,6 +38,16 @@ class Partie{
             node.appendChild(textNode);
             ul.appendChild(node);
         }
+
+    }
+
+    eraseEmoji()
+    {
+
+        let li = document.querySelectorAll('li');
+        li.forEach(element=>{
+           element.innerHTML = Vote.removeEmoji(element.textContent);
+        });
 
     }
 
@@ -99,8 +110,12 @@ class Partie{
         let i = 0;
         let input = document.querySelector("#wait");
         if(this.timer_Cool_Down) {
+            if(this.timer_wait!==null){
+                clearInterval(this.timer_wait);
+                this.timer_wait = null;
+            }
             this.timer = setInterval(() => {
-                let phrase = "Les joueurs sont en train de voter";
+                let phrase = "Les joueurs sont en train de voter ";
                 let load = "...";
                 input.innerHTML = phrase + load.substr(0, i);
                 i++;
@@ -109,11 +124,60 @@ class Partie{
         }
         if(finish) {
             clearInterval(this.timer);
+            clearInterval(this.timer_wait);
             input.innerHTML = "";
             this.timer = 0;
         }
     }
 
+    removePlayer(player)
+    {
+
+        for(let i = 0;i<this.joueurs.length;i++) {
+            if (player.name === this.joueurs[i].name) {
+                this.joueurs.splice(i, 1);
+                this.removePlayerGraphic(player);
+            }
+        }
+    }
+
+    printWaitRoom()
+    {
+
+        let i = 0;
+        let input = document.querySelector("#wait");
+        if(this.timer_wait===null) {
+            this.timer_wait = setInterval(() => {
+                let phrase = "En attente de joueurs ";
+                let load = "...";
+                input.innerHTML = phrase + load.substr(0, i);
+                i++;
+                if (i === 4) i = 0;
+            }, 1000);
+        }
+    }
+
+    playerQuit(){
+
+        if(!this.timer_Cool_Down) clearInterval(this.timer);
+        this.printPlayers();
+        this.limit();
+        this.printWaitRoom();
+        this.eraseEmoji();
+        j.eraseWord();
+        this.timer = 0;
+        v.coolDown = true;
+
+    }
+
+    printDisconnect(player) {
+
+        let popup = document.getElementById("popup");
+        popup.innerHTML = `${player.name} disconnected from the party`;
+        popup.classList.toggle('show');
+        popup.addEventListener('webkitAnimationEnd',evt => {popup.classList.remove("show")},false);
+
+    }
 
     printResult(map)
     {
@@ -129,10 +193,15 @@ class Partie{
         }
     }
 
-    maximum()
+    removePlayerGraphic(player)
     {
 
-        //TODO UTILISER LES URLS
+        let li = document.querySelectorAll('li');
+        let ul = document.querySelector('ul');
+        li.forEach(element=>{
+            if(Vote.removeEmoji(element.textContent)===player.name)
+                ul.removeChild(element);
+        });
 
     }
 
@@ -140,7 +209,6 @@ class Partie{
     {
 
         this.joueurs.forEach((element)=>{
-            element.word="";
             element.score=0;
         });
         v.coolDown = true;
@@ -150,7 +218,7 @@ class Partie{
            element.innerHTML = this.joueurs[i].name;
            i++;
         });
-        socket.emit("party_limit");
+        socket.emit("reset");
 
     }
 

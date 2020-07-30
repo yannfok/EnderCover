@@ -5,15 +5,21 @@ const {Dictionnary} = require('./models/Dictionnary');
 let app = express();
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
+let cookieParser = require('cookie-parser')();
 let session = require('cookie-session');
 let bodyparser = require('body-parser');
 let urlEncodedParser = bodyparser.urlencoded({extended:false});
 let p = new Partie();
 let j;
+let roundFinish = false;
 
 const workspace = io.of("/EnderCover");
+const sess = session({
+    keys:['secretEnderCover']
+});
 
-app.use(session({secret:'secretEnderCover'}));
+app.use(cookieParser);
+app.use(sess);
 
 app.use(express.static(__dirname+"/public"));
 
@@ -23,7 +29,6 @@ app.get("/",(req,res)=>{
 
 }).post("/user",urlEncodedParser,(req,res)=>{
 
-    //req.session.player = new Joueur(req.body.user,"test");
     j = new Joueur(req.body.user,"test");
     p.addPlayer(j);
     res.redirect("EnderCover");
@@ -34,11 +39,18 @@ app.get("/",(req,res)=>{
 
 });
 
+workspace.use((socket,cb)=>{
+    let req = socket.handshake;
+    let res = {};
+    cookieParser(req,res,(err)=>{
+        if(err) throw err;
+        sess(req,res,cb);
+    });
+});
+
 workspace.on("connection",(socket)=>{
     let d = new Dictionnary(__dirname+'/resources/dictionnary.json');
-    let cookieString = socket.request.headers.cookie;
-    let req = {headers:{cookie:cookieString}};
-    session({ keys: ['secretEnderCover'] })(req, {}, function(){});
+    socket.handshake.session.player = j;
     workspace.emit('join',j,p);
     socket.on('party_limit',()=>{
         p.resetPoint();
@@ -59,6 +71,24 @@ workspace.on("connection",(socket)=>{
         p.winner().then(result=>{
             workspace.emit('result_party',Array.from(result));
         });
+        roundFinish = true;
+    });
+    socket.on('reset',()=>{
+        if(roundFinish) {
+            roundFinish = false;
+            p.resetPoint();
+            d.words().then(result => {
+                p.setWords(result);
+                workspace.emit('word', p);
+            });
+        }
+    });
+    socket.on('disconnect',()=>{
+        if(socket.handshake.session.player !== undefined) {
+            console.log(`Client disconnect details : Player => name : ${socket.handshake.session.player.name} score : ${socket.handshake.session.player.score} word : ${socket.handshake.session.player.word}`);
+            p.removePlayer(socket.handshake.session.player);
+            workspace.emit('client_disconnect', socket.handshake.session.player);
+        }
     });
 });
 

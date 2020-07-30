@@ -8,3 +8,4 @@ sh.onWord();
 sh.onVote();
 sh.onVoteCB();
 sh.onFinish();
+sh.onQuit();

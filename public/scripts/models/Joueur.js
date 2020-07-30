@@ -9,6 +9,13 @@ class Joueur{
 
     }
 
+    eraseWord()
+    {
+
+        document.querySelector("#word").innerHTML = "";
+
+    }
+
     printWord(party)
     {
 

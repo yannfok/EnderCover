@@ -12,6 +12,8 @@ class SocketHandler {
            p.printPlayers();
            p.limit();
            p.start();
+           if(p.joueurs.length<4)
+               p.printWaitRoom();
         });
 
     }
@@ -20,9 +22,9 @@ class SocketHandler {
     {
 
         socket.on('word',party=>{
-            console.log(party);
             p.joueurs = party.joueurs;
             p.roundFinish().then(result=>{
+                console.log(p.timer);
                 j.setWordWithParty(p);
                 j.printWord(p);
                 p.printWait(result);
@@ -67,6 +69,19 @@ class SocketHandler {
                 p.reset();
             },5000);
         })
+
+    }
+
+    onQuit()
+    {
+
+        socket.on('client_disconnect',(player)=>{
+            if(p.timer_wait!==null)clearInterval(p.timer_wait);
+            p.timer_wait = null;
+            p.printDisconnect(player);
+            p.removePlayer(player);
+            p.playerQuit();
+        });
 
     }
 

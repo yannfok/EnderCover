@@ -67,16 +67,19 @@ module.exports.Partie = class Partie {
         return new Promise(resolve => {
             let result = [];
             result.push(this.joueurs[0].word);
-            this.joueurs.forEach(element=>{
-                if(element.word !== result[0])
-                    result.push(element.word);
-            });
+            for(let j of this.joueurs){
+                if(j.word !== result[0])
+                    result.push(j.word);
+                if(result.length===2) break;
+            }
             resolve(result);
         });
 
     }
 
     static motEquals(a, b) {
+
+        return (a[0]===b[0] || a[0] === b[1]) && (a[1] === b[0] || a[1] === b[1]);
 
     }
 
@@ -88,6 +91,15 @@ module.exports.Partie = class Partie {
         });
 
         return await this.state_players(best_player);
+
+    }
+
+    removePlayer(player)
+    {
+
+        for(let i = 0;i<this.joueurs.length;i++)
+            if(player.name === this.joueurs[i].name)
+                this.joueurs.splice(i,1);
 
     }
 
