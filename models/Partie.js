@@ -1,10 +1,13 @@
 const {Dictionnary} = require('./Dictionnary');
 
 module.exports.Partie = class Partie {
+static count_room = 0;
 
     constructor() {
         this.joueurs = [];
         this.timer = 0;
+        Partie.count_room++;
+        this.id_room = Partie.count_room;
     }
 
     resetPoint()
@@ -21,6 +24,20 @@ module.exports.Partie = class Partie {
 
         this.joueurs = party.joueurs;
         this.timer = party.timer;
+
+    }
+
+    numberPlayers()
+    {
+
+        return this.joueurs.length;
+
+    }
+
+    get empty()
+    {
+
+        return this.numberPlayers() === 0;
 
     }
 

@@ -1,59 +1,78 @@
-.alert {
-    width: 20%;
-    height: 4%;
-    font-size: 13px;
-    border: 2px solid black;
+.alert{
+
+    background: #ff8147;
+    padding: 20px 40px;
+    min-width: 250px;
+    position:absolute;
+    right:0;
+    bottom: 10px;
+    border-radius: 4px;
     text-align: center;
-    vertical-align:middle;
-    padding: 15px;
-    background-color: red;
-    border-radius: 10px;
-    color: white;
-    bottom: 7%;
-    right: 3%;
+    border-left: 8px solid #ff0013;
+    border-right: 8px solid #ff0013;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.alert.show{
+    animation: show_slide 2s ease forwards;
+}
+
+.alert.showAlert{
+    opacity: 1;
+    pointer-events: auto;
+}
+
+@keyframes show_slide {
+    0%{
+        transform: translateX(100%);
+    }
+    40%{
+        transform: translateX(-10%);
+    }
+    80%{
+        transform: translateX(0%);
+    }
+    100%{
+        transform: translateX(-10px);
+    }
+}
+
+@keyframes hide_slide {
+    0%{
+        transform: translateX(-10px);
+    }
+    40%{
+        transform: translateX(0%);
+    }
+    80%{
+        transform: translateX(-10%);
+    }
+    100%{
+        transform: translateX(100%);
+    }
+}
+
+
+.alert.hide{
+    animation: hide_slide 2s ease forwards;
+}
+
+.alert .fa-exclamation-circle{
+
     position: absolute;
-    visibility: hidden;
+    left:20px;
+    top:50%;
+    transform: translateY(-50%);
+    color: #000000;
+    font-size: 30px;
+
 }
 
-.show {
-    visibility: visible;
-    -webkit-animation: fadeIn ease 10s;
-    animation: fadeIn ease 10s;
-    -webkit-animation-fill-mode: forwards;
+.alert .msg{
+    padding: 0 20px;
+    font-size: 18px;
+    color: #000000;
 }
 
-@-webkit-keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-
-    10% {
-        opacity: 0.5;
-    }
-
-    50% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-    }
-}
-
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-
-    10% {
-        opacity: 0.5;
-    }
-
-    20% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-    }
-}

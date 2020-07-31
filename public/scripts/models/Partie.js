@@ -172,10 +172,25 @@ class Partie{
 
     printDisconnect(player) {
 
-        let popup = document.getElementById("popup");
-        popup.innerHTML = `${player.name} disconnected from the party`;
-        popup.classList.toggle('show');
-        popup.addEventListener('webkitAnimationEnd',evt => {popup.classList.remove("show")},false);
+        let alert_msg = document.querySelector(".alert");
+        alert_msg.style.display = "block";
+        document.querySelector('.msg').innerHTML = `${player.name} disconnected from the party`;
+        alert_msg.classList.add("show");
+        alert_msg.classList.remove("hide");
+        alert_msg.classList.add("showAlert");
+        setTimeout(()=>{
+            alert_msg.classList.remove("show");
+            alert_msg.classList.add("hide");
+            alert_msg.addEventListener("webkitAnimationEnd",displayAlertNone);
+        },5000);
+
+        function displayAlertNone()
+        {
+
+            alert_msg.style.display = "none";
+            alert_msg.removeEventListener("webkitAnimationEnd",displayAlertNone);
+
+        }
 
     }
 
