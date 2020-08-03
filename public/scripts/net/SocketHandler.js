@@ -38,6 +38,7 @@ class SocketHandler {
     {
 
         socket.on('party_vote',(result)=>{
+            console.log(result);
             p.joueurs = result.joueurs;
             p.roundFinish().then(finish=>{
                p.printWait(finish);
