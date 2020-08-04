@@ -1,14 +1,27 @@
 const {Dictionnary} = require('./Dictionnary');
 
+/**
+ * Classe partie  qui represente une partie coté serveur
+ * elle est en fait composé d'un tableau de joueurs
+ */
+
 module.exports.Partie = class Partie {
-static count_room = 0;
+
+    static count_room = 0;//Attribut statique qui represente le nombre de room existant
+
+    /**
+     * Constructeur de la classe Partie
+     */
 
     constructor() {
         this.joueurs = [];
         this.timer = 0;
-        Partie.count_room++;
         this.id_room = Partie.count_room;
     }
+
+    /**
+     * Permet de remettre les points des joueurs de toute la partie a 0
+     */
 
     resetPoint()
     {
@@ -19,6 +32,13 @@ static count_room = 0;
 
     }
 
+    /**
+     * Permet de mettre a jour la party grace au coté client
+     * @param party JSON Envoyé grace au client
+     * NB : Ne pas trop utilisé il est plus viable de regler soit meme les attributs de la classe grace au json
+     * sachant que les visibilités n'existe pas en js
+     */
+
     setParty(party)
     {
 
@@ -27,6 +47,11 @@ static count_room = 0;
 
     }
 
+    /**
+     * Permet de retourner le nombre de joueurs dans la partie
+     * @returns {number}
+     */
+
     numberPlayers()
     {
 
@@ -34,12 +59,22 @@ static count_room = 0;
 
     }
 
+    /**
+     * Permet de savoir si la partie est vide
+     * @returns {boolean} true si vide et false si contient au moins un joueur
+     */
+
     get empty()
     {
 
         return this.numberPlayers() === 0;
 
     }
+
+    /**
+     * Permet d'ajouter un joueur dans la partie
+     * @param player joueur a rajouter dans la partie
+     */
 
     addPlayer(player)
     {
@@ -49,6 +84,12 @@ static count_room = 0;
         });
 
     }
+
+    /**
+     * Methode asynchrone qui permet de savoir si un joueur exist dans la partie
+     * @param player joueur a testé
+     * @returns {Promise<boolean>} false si existe pas et true si existe
+     */
 
     async playerExists(player)
     {
@@ -62,6 +103,11 @@ static count_room = 0;
         });
 
     }
+
+    /**
+     * Permet de mettre les mots des joueurs
+     * @param words le tableau de mots depuis le dictionnaire (cf la classe Dictionnary)
+     */
 
     setWords(words) {
 
@@ -77,6 +123,11 @@ static count_room = 0;
         }
 
     }
+
+    /**
+     * Methode asynchrone qui permet d'obtenir les mots de la partie
+     * @returns {Promise<array>} promesse avec le tableau de mots
+     */
 
     async words()
     {
@@ -94,11 +145,23 @@ static count_room = 0;
 
     }
 
+    /**
+     * Methode statique qui permet de savoir si le tableau de mots est le meme que celui passé en parametre
+     * @param a premier mot
+     * @param b deuxieme mot
+     * @returns {boolean|boolean} true si egal et false si non egal l'odre n'est pas pris en compte
+     */
+
     static motEquals(a, b) {
 
         return (a[0]===b[0] || a[0] === b[1]) && (a[1] === b[0] || a[1] === b[1]);
 
     }
+
+    /**
+     * Methode asynchrone qui donne les gagnants du round de la partie
+     * @returns {Promise<Map<any, any>>} promesse contenant un map avec le ou les gagnants et le ou les perdants
+     */
 
     async winner() {
 
@@ -111,6 +174,11 @@ static count_room = 0;
 
     }
 
+    /**
+     * Methode qui permet de supprimer un joueur de la partie
+     * @param player joueur qui doit etre supprimer
+     */
+
     removePlayer(player)
     {
 
@@ -119,6 +187,12 @@ static count_room = 0;
                 this.joueurs.splice(i,1);
 
     }
+
+    /**
+     * Methode asynchrone qui permet de creer la map des gagnants
+     * @param player joueur qui a le plus grand nombre de votes
+     * @returns {Promise<Map<any, any>>} promesse qui contient le map
+     */
 
     async state_players(player) {
 

@@ -1,10 +1,27 @@
+/**
+ * Classe qui represente une partie
+ * Elle est composée d'un tableau de 4 joueurs
+ * d'un timer qui va afficher l'attente
+ * et d'un timer qui va afficher l'attente des votes
+ */
+
 class Partie{
+
+    /**
+     * Constructeur basique sans parametre qui permet de creer une nouvelle partie
+     */
 
     constructor() {
         this.joueurs = [];
         this.timer = 0;
         this.timer_wait = null;
     }
+
+    /**
+     * Methode asynchrone qui permet de savoir si un joueur dans la partie existe
+     * @param player joueur concerné
+     * @returns {Promise<boolean>} retourne une promesse contenant un boolean si oui le player existe
+     */
 
     async playerExists(player)
     {
@@ -19,6 +36,11 @@ class Partie{
 
     }
 
+    /**
+     * Permet d'ajouter un joueur dans la partie
+     * @param player Joueur a ajouter dans la partie
+     */
+
     addPlayer(player)
     {
 
@@ -27,6 +49,11 @@ class Partie{
         });
 
     }
+
+    /**
+     * Methode uniquement graphique
+     * Permet d'afficher les joueurs dans la partie
+     */
 
     printPlayers() {
 
@@ -41,6 +68,11 @@ class Partie{
 
     }
 
+    /**
+     * Methode uniquement graphique
+     * Permet d'effacer les emojis de vote sur les joueurs
+     */
+
     eraseEmoji()
     {
 
@@ -50,6 +82,12 @@ class Partie{
         });
 
     }
+
+    /**
+     * Methode asynchrone qui permet d'avoir l'index d'un joueur dans la partie
+     * @param player joueur concerné
+     * @returns {Promise<int>} retourne une promesse qui contient l'entier qui correspond a l'index du joueur dans la partie
+     */
 
     async indexOf(player)
     {
@@ -63,9 +101,14 @@ class Partie{
             });
         });
 
-        return await promise;
+        return await promise;//Permet d'attendre la constante future promise
 
     }
+
+    /**
+     * Methode uniquement graphique
+     * permet d'afficher un compteur de joueurs présent dans la partie
+     */
 
     limit()
     {
@@ -74,6 +117,10 @@ class Partie{
         span.innerHTML = this.joueurs.length+"/4";
 
     }
+
+    /**
+     * Methode qui envoie juste un event socket au serveur pour lancer la partie lorsqu'elle est pleine
+     */
 
     start()
     {
@@ -85,6 +132,11 @@ class Partie{
 
 
     }
+
+    /**
+     * Methode asynchrone qui permet de savoir si le tour de partie est finie
+     * @returns {Promise<boolean>} retourne une promesse qui est un boolean qui est true si la partie est finie et false si elle est pas finie
+     */
 
     async roundFinish()
     {
@@ -98,12 +150,22 @@ class Partie{
 
     }
 
+    /**
+     * Permet de savoir si le timer est définie
+     * @returns {boolean} retourne true si le timer est non définie et false si il est definie
+     */
+
     get timer_Cool_Down()
     {
 
         return this.timer === 0;
 
     }
+
+    /**
+     * Methode qui permet d'afficher l'attente
+     * @param finish boolean partie finie ou pas
+     */
 
     printWait(finish) {
 
@@ -130,6 +192,11 @@ class Partie{
         }
     }
 
+    /**
+     * Permet de supprimer un joueur de la partie notamment lors de la deconnexion de celui ci
+     * @param player joueur qui doit etre supprimé
+     */
+
     removePlayer(player)
     {
 
@@ -140,6 +207,10 @@ class Partie{
             }
         }
     }
+
+    /**
+     * Afficher le timer sur l'attente des joueurs
+     */
 
     printWaitRoom()
     {
@@ -157,6 +228,10 @@ class Partie{
         }
     }
 
+    /**
+     * Methode qui permet de traiter la deconnexion d'une joueur
+     */
+
     playerQuit(){
 
         if(!this.timer_Cool_Down) clearInterval(this.timer);
@@ -169,6 +244,25 @@ class Partie{
         v.coolDown = true;
 
     }
+
+    /**
+     * Methode uniquement graphique
+     * Affiche en haut a droite la room a laquelle est connecté l'utilisateur
+     * @param room a laquelle est connecté l'utilisateur
+     */
+
+    printRoom(room)
+    {
+
+        document.querySelector("#room").innerHTML = "room_id : " + room;
+
+    }
+
+    /**
+     * Methode uniquement graphique
+     * affiche un popup pour les autres utilisateurs de la deconnexion des autres utilisateurs
+     * @param player joueur qui a deconnecté
+     */
 
     printDisconnect(player) {
 
@@ -194,6 +288,12 @@ class Partie{
 
     }
 
+    /**
+     * Methode uniquement graphique
+     * permet d'afficher le resultat de la partie
+     * @param map envoyé par le serveur qui est composée des gagnants et des perdants
+     */
+
     printResult(map)
     {
 
@@ -208,6 +308,12 @@ class Partie{
         }
     }
 
+    /**
+     * Methode uniquement graphique
+     * permet d'effacer le joueur de la partie
+     * @param player joueur qui doit etre supprimé
+     */
+
     removePlayerGraphic(player)
     {
 
@@ -219,6 +325,10 @@ class Partie{
         });
 
     }
+
+    /**
+     * Methode qui permet de reset le round
+     */
 
     reset()
     {

@@ -1,4 +1,6 @@
-const socket = io("http://192.168.1.35:3000/EnderCover");
+//Fichier contenant les differentes constantes et variables du code
+//et aux appels de methodes pour la communication en temps réel
+const socket = io(window.location.href);
 let j;
 let p = new Partie();
 let v = new Vote();

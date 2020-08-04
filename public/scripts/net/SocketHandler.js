@@ -1,15 +1,22 @@
+/**
+ * Classe qui s'occupe du net-code
+ * definition de plusieurs methode lors de l'emition d'evenement coté serveur
+ * utilisé le constructeur de base
+ */
+
 class SocketHandler {
 
     /**
-     * Renvoie le joueur qui join la room
+     * Traite une nouvelle connexion dans la room
      */
 
     join() {
 
-        socket.on('join',(result,party)=>{
+        socket.on('join',(result,party,room)=>{
            if(j===undefined) j = new Joueur(result.name,result.word);
            p.joueurs = party.joueurs;
            p.printPlayers();
+           p.printRoom(room);
            p.limit();
            p.start();
            if(p.joueurs.length<4)
@@ -18,13 +25,16 @@ class SocketHandler {
 
     }
 
+    /**
+     * Traite lorsque les joueurs on recu leurs mots
+     */
+
     onWord()
     {
 
         socket.on('word',party=>{
             p.joueurs = party.joueurs;
             p.roundFinish().then(result=>{
-                console.log(p.timer);
                 j.setWordWithParty(p);
                 j.printWord(p);
                 p.printWait(result);
@@ -34,11 +44,14 @@ class SocketHandler {
 
     }
 
+    /**
+     * Traitement lors d'un vote
+     */
+
     onVote()
     {
 
         socket.on('party_vote',(result)=>{
-            console.log(result);
             p.joueurs = result.joueurs;
             p.roundFinish().then(finish=>{
                p.printWait(finish);
@@ -47,6 +60,10 @@ class SocketHandler {
         });
 
     }
+
+    /**
+     * Traitement lors du vote d'un joueurs different de soi meme
+     */
 
     onVoteCB()
     {
@@ -60,6 +77,10 @@ class SocketHandler {
 
     }
 
+    /**
+     * Traitement lors de la fin d'une partie
+     */
+
     onFinish()
     {
 
@@ -72,6 +93,10 @@ class SocketHandler {
         })
 
     }
+
+    /**
+     * Traitement lorsque quelqu'un quitte la partie
+     */
 
     onQuit()
     {
