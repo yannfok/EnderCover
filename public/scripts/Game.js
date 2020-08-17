@@ -11,3 +11,4 @@ sh.onVote();
 sh.onVoteCB();
 sh.onFinish();
 sh.onQuit();
+sh.onMessage();

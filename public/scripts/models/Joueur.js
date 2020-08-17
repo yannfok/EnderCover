@@ -18,6 +18,7 @@ class Joueur{
         this.name = name;
         this.word = word;
         this.solo = false;
+        this.cooldown = true;
 
     }
 
@@ -57,6 +58,53 @@ class Joueur{
         party.joueurs.forEach((element)=>{
            if(element.name===this.name) this.word = element.word;
         });
+
+    }
+
+    /**
+     * Permet d'envoyer les messages vers le serveur et les renvoyer a tout les clients dans la room
+     */
+
+    sendMessage()
+    {
+
+        let msg = document.querySelector(".message");
+        let button = document.querySelector("button");
+        if(this.cooldown) {
+            button.addEventListener("click", (event) => {
+                event.preventDefault();
+                socket.emit("message", msg.value,this);
+            });
+            this.cooldown = !this.cooldown;
+        }
+
+    }
+
+    /**
+     * Permet d'afficher le message recu par le serveur dans la bulle
+     * @param msg
+     */
+
+    displayMessage(msg)
+    {
+
+        let bubble = document.querySelectorAll("li");
+        let j = 1;
+        for(let i of bubble)
+        {
+
+            if(Vote.removeEmoji(i.textContent) === this.name){
+
+
+                document.querySelector("ul").children[j===1?j-1:j===2?j:j===3?j+1:j===4?j+2:j].classList.remove("start");
+                document.querySelector("ul").children[j===1?j-1:j===2?j:j===3?j+1:j===4?j+2:j].classList.add("enable-bubble");
+                document.querySelector("ul").children[j===1?j-1:j===2?j:j===3?j+1:j===4?j+2:j].innerHTML = msg;
+
+            }
+
+            j++;
+
+        }
 
     }
 

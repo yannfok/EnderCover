@@ -1,7 +1,7 @@
 //Fichier contenant le traitement côté serveur
 //Contient une partie socket qui permet la communication en temps réel de l'application
 
-//Chargement des dépendances NPM et chargement des classes côtés serveurs de l'application
+//Chargement des dépendances NPM et chargement des classes côté serveur de l'application
 const express = require('express');
 const {Joueur} = require('./models/Joueur');
 const {Partie} = require('./models/Partie');
@@ -94,6 +94,9 @@ workspace.on("connection",(socket)=>{
     });
     socket.on('player_has_vote',(vote)=>{
         workspace.to(socket.handshake.session.room).emit('vote_from_player',vote);
+    });
+    socket.on("message",(message,joueur)=>{
+        workspace.to(socket.handshake.session.room).emit("message_cb",message,joueur);
     });
     socket.on('finish',(party)=>{
         socket.handshake.session.p.joueurs = party.joueurs;

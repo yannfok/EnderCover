@@ -34,12 +34,27 @@ class SocketHandler {
 
         socket.on('word',party=>{
             p.joueurs = party.joueurs;
+            j.sendMessage();
             p.roundFinish().then(result=>{
                 j.setWordWithParty(p);
                 j.printWord(p);
                 p.printWait(result);
                 v.vote(p,j);
             });
+        });
+
+    }
+
+    /**
+     * Traitement des envoi de message coté client
+     */
+
+    onMessage()
+    {
+
+        socket.on("message_cb",(message,joueur)=>{
+            let temp = new Joueur(joueur.name,joueur.word);
+            temp.displayMessage(message);
         });
 
     }

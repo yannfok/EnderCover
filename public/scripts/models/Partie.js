@@ -60,9 +60,14 @@ class Partie{
         let ul = document.querySelector('ul');
         let li = document.querySelectorAll('li');
         for (let i = li.length; i < this.joueurs.length; i++) {
+            let nodeBubble = document.createElement("div");
+            nodeBubble.classList.add("speech-bubble");
+            nodeBubble.classList.add("start");
+            nodeBubble.id = this.joueurs[i].name;
             let node = document.createElement("li");
             let textNode = document.createTextNode(this.joueurs[i].name);
             node.appendChild(textNode);
+            ul.appendChild(nodeBubble);
             ul.appendChild(node);
         }
 
@@ -319,6 +324,13 @@ class Partie{
 
         let li = document.querySelectorAll('li');
         let ul = document.querySelector('ul');
+        for(let i of ul.children)
+        {
+
+            if(i.id === player.name)
+                ul.removeChild(i);
+
+        }
         li.forEach(element=>{
             if(Vote.removeEmoji(element.textContent)===player.name)
                 ul.removeChild(element);

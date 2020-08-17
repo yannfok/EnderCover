@@ -11,6 +11,51 @@ h1{
 
 }
 
+.speech-bubble {
+    position: relative;
+    background: #d56273;
+    border-radius: .4em;
+    width:50%;
+    text-align: center;
+    margin-block-end: 12px;
+}
+
+.message{
+
+    display: block;
+    margin: auto;
+
+}
+
+.start{
+
+    visibility: hidden;
+
+}
+
+.enable-bubble{
+
+    animation-name: slow;
+    animation-duration: 2s;
+    visibility: visible;
+
+}
+
+.speech-bubble:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 25%;
+    width: 0;
+    height: 0;
+    border: 20px solid transparent;
+    border-top-color: #d56273;
+    border-bottom: 0;
+    border-left: 0;
+    margin-left: -10px;
+    margin-bottom: -20px;
+}
+
 #room{
 
     text-align: right;
@@ -30,32 +75,32 @@ ul{
     font-size: 20px;
 
 }
-
-ul :first-child{
+ul :nth-child(2){
 
     list-style-type: "\1F385";
 
 }
 
-ul :nth-child(2){
+ul :nth-child(4){
 
     list-style-type: "\1F3CB";
 
 }
 
-ul :nth-child(3)
+ul :nth-child(6)
 {
 
     list-style-type: "\1F46E";
 
 }
 
-ul :nth-child(4)
+ul :nth-child(8)
 {
 
     list-style-type: "\1F934";
 
 }
+
 
 #wait{
 
@@ -63,7 +108,22 @@ ul :nth-child(4)
 
 }
 
+@keyframes slow{
+
+    0%{opacity: 0;}
+    50%{opacity: 0.50;}
+    100%{opacity: 1;}
+
+}
+
 #word{
     text-align: center;
     margin-top: 5%;
+}
+
+button{
+
+    display: block;
+    margin: 5px auto auto;
+
 }
