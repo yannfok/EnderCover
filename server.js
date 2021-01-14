@@ -1,6 +1,7 @@
 //Fichier contenant le traitement côté serveur
 //Contient une partie socket qui permet la communication en temps réel de l'application
-
+const port = process.env.PORT || 80;
+let baseHost = process.env.WEBSITE_HOSTNAME || 'localhost';
 //Chargement des dépendances NPM et chargement des classes côté serveur de l'application
 const express = require('express');
 const {Joueur} = require('./models/Joueur');
@@ -125,7 +126,7 @@ workspace.on("connection",(socket)=>{
 });
 
 //Configuration de l'écoute du serveur sur le port 3000
-http.listen(3000,()=>{
+http.listen(port,()=>{
 
     console.log("server running on 3000");
 
