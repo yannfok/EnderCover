@@ -7,8 +7,6 @@ const {Dictionnary} = require('./Dictionnary');
 
 module.exports.Partie = class Partie {
 
-    static count_room = 0;//Attribut statique qui represente le nombre de room existant
-
     /**
      * Constructeur de la classe Partie
      */
@@ -16,7 +14,7 @@ module.exports.Partie = class Partie {
     constructor() {
         this.joueurs = [];
         this.timer = 0;
-        this.id_room = Partie.count_room;
+
     }
 
     /**

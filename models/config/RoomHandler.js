@@ -5,6 +5,8 @@ const {Partie} = require('../Partie');
  * une room est associé a une partie et a un boolean
  */
 
+let count_room = 0;
+
 module.exports.RoomHandler = class RoomHandler{
 
     /**
@@ -28,8 +30,8 @@ module.exports.RoomHandler = class RoomHandler{
 
         if(!this.existsKey(k)) {
 
-            Partie.count_room++;
-            this.association.push([k+Partie.count_room, v, false]);
+            count_room++;
+            this.association.push([k+count_room, v, false]);
 
         }
     }
